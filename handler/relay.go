@@ -99,8 +99,11 @@ func renderRoute(
 		"header": func(key string) string {
 			return req.Header.Get(key)
 		},
-		"body": func(path string) interface{} {
-			return resolvePath(bodyData, path)
+		"body": func(paths ...string) interface{} {
+			if len(paths) == 0 {
+				return bodyData
+			}
+			return resolvePath(bodyData, paths[0])
 		},
 		"env": func(key string, fallback ...string) string {
 			v := os.Getenv(key)
@@ -113,6 +116,13 @@ func renderRoute(
 			}
 
 			return ""
+		},
+		"toJson": func(v interface{}) string {
+			b, err := json.Marshal(v)
+			if err != nil {
+				return ""
+			}
+			return string(b)
 		},
 	}
 

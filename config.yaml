@@ -19,6 +19,7 @@ routes:
     headers:
       Content-Type: application/json
       Authorization: "Bearer {{ env `API_TOKEN` `dummy-token` }}"
+
     body: |
       {
         "text": "{{ body `message.text` }}"
@@ -32,5 +33,5 @@ routes:
 
     body: |
       {
-        "content": "GitHub event: {{ header `X-GitHub-Event` }}"
+        "content": "GitHub event: {{ header `X-GitHub-Event` }}\n```json\n{{ toPrettyJson (body) }}\n```"
       }
