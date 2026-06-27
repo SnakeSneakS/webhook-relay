@@ -74,7 +74,7 @@ func (h *handler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	_, _ = rw.Write(respBody)
 }
 
-func NewHandler(cfg *cfg.Config) http.Handler {
+func NewRelayHandler(cfg *cfg.Config) http.Handler {
 	return &handler{
 		cfg: cfg,
 	}

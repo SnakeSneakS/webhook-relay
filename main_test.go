@@ -24,7 +24,7 @@ func TestHandlerCreation(t *testing.T) {
 		},
 	}
 
-	h := relayhandler.NewHandler(config)
+	h := relayhandler.NewRelayHandler(config)
 
 	req := httptest.NewRequest(http.MethodPost, "/unknown", nil)
 	rec := httptest.NewRecorder()

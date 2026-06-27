@@ -19,7 +19,7 @@ func main() {
 	mux.Handle("/healthz", handler.NewHealthHandler())
 
 	// relay handler
-	mux.Handle("/", handler.NewHandler(cfg))
+	mux.Handle("/", handler.NewRelayHandler(cfg))
 
 	if err := http.ListenAndServe(cfg.Server.Addr, mux); err != nil {
 		log.Fatal(err)
