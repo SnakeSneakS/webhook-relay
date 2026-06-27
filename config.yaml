@@ -23,3 +23,14 @@ routes:
       {
         "text": "{{ body `message.text` }}"
       }
+
+  - path: /discord
+    target: ${DISCORD_WEBHOOK_URL}
+
+    headers:
+      Content-Type: application/json
+
+    body: |
+      {
+        "content": "GitHub event: {{ header `X-GitHub-Event` }}"
+      }
