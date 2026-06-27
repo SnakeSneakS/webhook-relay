@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"net/http"
 	"os"
 	"strings"
+	"text/template"
 
 	"github.com/snakesneaks/webhook-relay/cfg"
 )
@@ -65,18 +65,19 @@ func (r *renderService) Render(
 			return ""
 		},
 		"toJson": func(v interface{}) string {
-			b, err := json.Marshal(v)
-			if err != nil {
-				return ""
-			}
-			return string(b)
+			return r.toJSON(v, false)
 		},
 		"toPrettyJson": func(v interface{}) string {
-			b, err := json.MarshalIndent(v, "", "  ")
+			return r.toJSON(v, true)
+		},
+		"escape": func(s string) string {
+			b, err := json.Marshal(s)
 			if err != nil {
 				return ""
 			}
-			return string(b)
+
+			escaped := string(b)
+			return escaped[1 : len(escaped)-1]
 		},
 	}
 
@@ -115,6 +116,23 @@ func (r *renderService) Render(
 	}
 
 	return renderedTarget, outHeaders, []byte(renderedBody), nil
+}
+
+func (r *renderService) toJSON(v interface{}, pretty bool) string {
+	var buf bytes.Buffer
+
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false)
+
+	if pretty {
+		enc.SetIndent("", "  ")
+	}
+
+	if err := enc.Encode(v); err != nil {
+		return ""
+	}
+
+	return strings.TrimSpace(buf.String())
 }
 
 func (r *renderService) resolvePath(data map[string]interface{}, path string) interface{} {

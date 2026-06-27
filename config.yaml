@@ -8,9 +8,9 @@ routes:
 
     body: |
       {
-        "repository": "{{ body `repository.name` }}",
-        "sender": "{{ body `sender.login` }}",
-        "action": "{{ body `action` }}"
+        "repository": "{{ escape (body `repository.name`) }}",
+        "sender": "{{ escape (body `sender.login`) }}",
+        "action": "{{ escape (body `action`) }}"
       }
 
   - path: /slack
@@ -22,7 +22,7 @@ routes:
 
     body: |
       {
-        "text": "{{ body `message.text` }}"
+        "text": "{{ escape (body `message.text`) }}"
       }
 
   - path: /discord
@@ -33,5 +33,5 @@ routes:
 
     body: |
       {
-        "content": "GitHub event: {{ header `X-GitHub-Event` }}\n```json\n{{ toPrettyJson (body) }}\n```"
+        "content": "GitHub event: {{ header `X-GitHub-Event` }}\n```json\n{{ escape (toPrettyJson (body)) }}\n```"
       }
