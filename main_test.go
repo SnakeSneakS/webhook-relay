@@ -7,6 +7,7 @@ import (
 
 	"github.com/snakesneaks/webhook-relay/cfg"
 	relayhandler "github.com/snakesneaks/webhook-relay/handler"
+	"github.com/snakesneaks/webhook-relay/service"
 )
 
 func TestHandlerCreation(t *testing.T) {
@@ -23,8 +24,9 @@ func TestHandlerCreation(t *testing.T) {
 			},
 		},
 	}
+	renderService := service.NewRenderService()
 
-	h := relayhandler.NewRelayHandler(config)
+	h := relayhandler.NewRelayHandler(config, renderService)
 
 	req := httptest.NewRequest(http.MethodPost, "/unknown", nil)
 	rec := httptest.NewRecorder()
