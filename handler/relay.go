@@ -124,6 +124,13 @@ func renderRoute(
 			}
 			return string(b)
 		},
+		"toPrettyJson": func(v interface{}) string {
+			b, err := json.MarshalIndent(v, "", "  ")
+			if err != nil {
+				return ""
+			}
+			return string(b)
+		},
 	}
 
 	render := func(tmpl string) (string, error) {
