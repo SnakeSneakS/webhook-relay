@@ -1,4 +1,4 @@
-package webhookrelay
+package main
 
 import (
 	"log"
@@ -21,6 +21,8 @@ func main() {
 	// relay handler
 	mux.Handle("/", handler.NewRelayHandler(cfg))
 
+	log.Println("Listen and serve on port: ", cfg.Server.Addr)
+	log.Println("Routes: ", cfg.App.Routes)
 	if err := http.ListenAndServe(cfg.Server.Addr, mux); err != nil {
 		log.Fatal(err)
 	}

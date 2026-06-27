@@ -1,4 +1,4 @@
-package webhookrelay_test
+package main_test
 
 import (
 	"net/http"
