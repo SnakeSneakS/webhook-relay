@@ -16,27 +16,27 @@ type renderService struct {
 }
 
 type RenderService interface {
-	RenderRoute(
+	Render(
 		route *cfg.Route,
 		req *http.Request,
 		rawBody []byte,
-	) (map[string]string, []byte, error)
+	) (target string, headers map[string]string, body []byte, err error)
 }
 
 func NewRenderService() RenderService {
 	return &renderService{}
 }
 
-func (r *renderService) RenderRoute(
+func (r *renderService) Render(
 	route *cfg.Route,
 	req *http.Request,
 	rawBody []byte,
-) (map[string]string, []byte, error) {
+) (target string, headers map[string]string, body []byte, err error) {
 	var bodyData map[string]interface{}
 
 	if len(rawBody) > 0 {
 		if err := json.Unmarshal(rawBody, &bodyData); err != nil {
-			return nil, nil, fmt.Errorf("invalid json body: %w", err)
+			return "", nil, nil, fmt.Errorf("invalid json body: %w", err)
 		}
 	} else {
 		bodyData = map[string]interface{}{}
@@ -99,17 +99,22 @@ func (r *renderService) RenderRoute(
 	for key, tmpl := range route.Headers {
 		rendered, err := render(tmpl)
 		if err != nil {
-			return nil, nil, fmt.Errorf("render header %s: %w", key, err)
+			return "", nil, nil, fmt.Errorf("render header %s: %w", key, err)
 		}
 		outHeaders[key] = rendered
 	}
 
 	renderedBody, err := render(route.Body)
 	if err != nil {
-		return nil, nil, fmt.Errorf("render body: %w", err)
+		return "", nil, nil, fmt.Errorf("render body: %w", err)
 	}
 
-	return outHeaders, []byte(renderedBody), nil
+	renderedTarget, err := render(route.Target)
+	if err != nil {
+		return "", nil, nil, fmt.Errorf("render target: %w", err)
+	}
+
+	return renderedTarget, outHeaders, []byte(renderedBody), nil
 }
 
 func (r *renderService) resolvePath(data map[string]interface{}, path string) interface{} {

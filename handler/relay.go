@@ -30,7 +30,7 @@ func (h *handler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 
-	outHeaders, outBody, err := h.renderService.RenderRoute(route, req, rawBody)
+	target, outHeaders, outBody, err := h.renderService.Render(route, req, rawBody)
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusBadRequest)
 		log.Println(err)
@@ -39,7 +39,7 @@ func (h *handler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	forwardReq, err := http.NewRequest(
 		http.MethodPost,
-		route.Target,
+		target,
 		bytes.NewReader(outBody),
 	)
 	if err != nil {
