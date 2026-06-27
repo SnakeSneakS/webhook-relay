@@ -42,7 +42,7 @@ jobs:
       - name: Build the Docker image
         run: |
           IMAGE_NAME="ghcr.io/${{ env.OWNER_LC }}/$(basename ${GITHUB_REPOSITORY}):${{ env.COMMIT_HASH }}"
-          docker build --target production -t $IMAGE_NAME .
+          docker build --target runner -t $IMAGE_NAME .
           
       - name: Push the Docker image
         run: |

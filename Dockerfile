@@ -24,7 +24,7 @@ RUN CGO_ENABLED=0 go build -o /go/bin/app
 ############################
 # Runtime stage
 ############################
-FROM alpine:latest
+FROM alpine:latest AS runner
 
 RUN apk --no-cache add ca-certificates
 
