@@ -13,7 +13,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := http.ListenAndServe(cfg.Server.Addr, handler.NewHandler(cfg)); err != nil {
+	mux := http.NewServeMux()
+
+	// health endpoints
+	mux.Handle("/healthz", handler.NewHealthHandler())
+
+	// relay handler
+	mux.Handle("/", handler.NewHandler(cfg))
+
+	if err := http.ListenAndServe(cfg.Server.Addr, mux); err != nil {
 		log.Fatal(err)
 	}
 }
