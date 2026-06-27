@@ -3,23 +3,12 @@
 ############################
 # Build stage
 ############################
-FROM golang:1.26-alpine AS builder
-
-WORKDIR /app
-
-# git is sometimes needed for go mod download
-RUN apk add --no-cache git
-
-COPY go.mod go.sum ./
-RUN go mod download
-
+FROM golang:1.26 AS builder
+WORKDIR /go/src/app
 COPY . .
-
-ENV CGO_ENABLED=0
-ENV GOOS=linux
-ENV GOARCH=amd64
-
+RUN go mod download
 RUN CGO_ENABLED=0 go build -o /go/bin/app
+
 
 ############################
 # Runtime stage
