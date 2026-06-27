@@ -1,0 +1,25 @@
+routes:
+  - path: /github
+    target: https://example.com/webhook
+
+    headers:
+      Authorization: "Bearer {{ header `X-Token` }}"
+      X-Event: "{{ header `X-GitHub-Event` }}"
+
+    body: |
+      {
+        "repository": "{{ body `repository.name` }}",
+        "sender": "{{ body `sender.login` }}",
+        "action": "{{ body `action` }}"
+      }
+
+  - path: /slack
+    target: https://example.com/slack
+
+    headers:
+      Content-Type: application/json
+      Authorization: "Bearer {{ env `API_TOKEN` `dummy-token` }}"
+    body: |
+      {
+        "text": "{{ body `message.text` }}"
+      }
